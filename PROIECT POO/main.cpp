@@ -49,7 +49,7 @@ class Apartament:public Locuinta  ///apartamentul este o locuinta
 
 class Casa:public Locuinta ///casa este o locuinta
 {char numar[5];
- int nr_et aje;
+ int nr_etaje;
  double suprafata_teren;
  public:
      Casa();
@@ -373,7 +373,7 @@ void OfertaVanzareCasa::Citire()
  C.Citire();
 }
 
-///---------------------clasa CerereCumparare-----------------------------
+///------------------------------clasa CerereCumparare-----------------------------
 CerereCumparare::CerereCumparare()
 {strcpy(client,"");
  strcpy(telefon,"");
@@ -440,7 +440,7 @@ ostream& operator<<(ostream& out,CerereCumparare&C)
 
 }
 
-///-----------------clasa AgentieImobiliara---------------------------------------
+///----------------------clasa AgentieImobiliara------------------------
 
 AgentieImobiliara::AgentieImobiliara()
 { vapart=NULL;
@@ -479,19 +479,15 @@ AgentieImobiliara::AgentieImobiliara(AgentieImobiliara&& A)
     vcase[i]=A.vcase[i];
  for(int i=0; i<nr_cereri; i++)
     vcereri[i]=A.vcereri[i];
- delete[] A.vapart;
- delete[] A.vcase;
- delete[] A.vcereri;
- A.nr_apart=0;
- A.nr_case=0;
- A.nr_cereri=0;
+ if(A.nr_apart!=0) {delete[] A.vapart; A.nr_apart=0;}
+ if(A.nr_case!=0) {delete[] A.vcase; A.nr_case=0;}
+ if(A.nr_cereri!=0) {delete[] A.vcereri; A.nr_cereri=0;}
 }
 
 AgentieImobiliara::~AgentieImobiliara()
-{ delete[] vapart;
-  delete[] vcase;
-  delete[] vcereri;
-  nr_apart=nr_case=nr_cereri=0;
+{ if(nr_apart!=0) {delete[] vapart; nr_apart=0;}
+  if(nr_case!=0) {delete[] vcase; nr_case=0;}
+  if(nr_cereri!=0) {delete[] vcereri; nr_cereri=0;}
 }
 
 void AgentieImobiliara::AdaugareOVA()
@@ -502,7 +498,7 @@ void AgentieImobiliara::AdaugareOVA()
     a[i]=vapart[i];
  nr_apart++;
  a[nr_apart-1]=A;
- delete[] vapart;
+ if(nr_apart!=0) delete[] vapart;
  vapart=a;
 }
 
@@ -521,7 +517,7 @@ void AgentieImobiliara::AdaugareOVC()
     a[i]=vcase[i];
  nr_case++;
  a[nr_case-1]=A;
- delete[] vcase;
+ if(nr_case!=0) delete[] vcase;
  vcase=a;
 }
 
@@ -539,7 +535,7 @@ void AgentieImobiliara::AdaugareCC()
     a[i]=vcereri[i];
  nr_cereri++;
  a[nr_cereri-1]=A;
- delete[] vcereri;
+ if(nr_cereri!=0) delete[] vcereri;
  vcereri=a;
 }
 
@@ -622,24 +618,23 @@ AgentieImobiliara& AgentieImobiliara::operator=(AgentieImobiliara& A)
 }
 
 AgentieImobiliara& AgentieImobiliara::operator=(AgentieImobiliara&& A)
-{nr_apart=A.nr_apart;
- nr_case=A.nr_case;
- nr_cereri=A.nr_cereri;
- vapart=new OfertaVanzareApartament[nr_apart];
- vcase=new OfertaVanzareCasa[nr_case];
- vcereri=new CerereCumparare[nr_cereri];
- for(int i=0; i<nr_apart; i++)
-    vapart[i]=A.vapart[i];
- for(int i=0; i<nr_case; i++)
-    vcase[i]=A.vcase[i];
- for(int i=0; i<nr_cereri; i++)
-    vcereri[i]=A.vcereri[i];
- delete[] A.vapart;
- delete[] A.vcase;
- delete[] A.vcereri;
- A.nr_apart=0;
- A.nr_case=0;
- A.nr_cereri=0;
+{if(this!=&A)
+  {nr_apart=A.nr_apart;
+  nr_case=A.nr_case;
+  nr_cereri=A.nr_cereri;
+  vapart=new OfertaVanzareApartament[nr_apart];
+  vcase=new OfertaVanzareCasa[nr_case];
+  vcereri=new CerereCumparare[nr_cereri];
+  for(int i=0; i<nr_apart; i++)
+     vapart[i]=A.vapart[i];
+  for(int i=0; i<nr_case; i++)
+     vcase[i]=A.vcase[i];
+  for(int i=0; i<nr_cereri; i++)
+     vcereri[i]=A.vcereri[i];
+   }
+ if(A.nr_apart!=0) {delete[] A.vapart; A.nr_apart=0;}
+ if(A.nr_case!=0) {delete[] A.vcase; A.nr_case=0;}
+ if(A.nr_cereri!=0) {delete[] A.vcereri; A.nr_cereri=0;}
  return *this;
 }
 
